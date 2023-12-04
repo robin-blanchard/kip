@@ -1,9 +1,12 @@
 import asyncio
-from typing import Union
+from typing import Union, Any
 
 from fastapi import FastAPI
 
 from tortoise.contrib.fastapi import register_tortoise
+
+from kip.models.auth import User
+from kip.schemas.auth import UserInSchema, UserSchema
 
 
 app = FastAPI()
@@ -26,6 +29,7 @@ register_tortoise(
 )
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.post("/users/", response_model=UserSchema)
+async def create_user(user_data: UserInSchema) -> Any:
+    user = await User.create(**user_data.dict(), hashed_password=user_data.password)
+    return user

@@ -7,6 +7,8 @@ class User(Model):
     # if you haven't done it yourself
     id = fields.IntField(pk=True)
     username = fields.CharField(max_length=255)
+    first_name = fields.CharField(max_length=255)
+    last_name = fields.CharField(max_length=255)
     hashed_password = fields.CharField(max_length=255)
 
     def __str__(self):
