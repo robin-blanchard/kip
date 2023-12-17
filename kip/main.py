@@ -1,23 +1,24 @@
-import asyncio
-from typing import Union, Any
+from typing import Any
 
 from fastapi import FastAPI
+
 
 from tortoise.contrib.fastapi import register_tortoise
 
 from kip.models.auth import User
 from kip.schemas.auth import UserInSchema, UserSchema
+from .settings import settings
 
 
 app = FastAPI()
 
-POSTGRES_USER = "robin"
-POSTGRES_PASSWORD = "R0bin!"
-POSTGRES_HOST = "127.0.0.1"
-POSTGRES_PORT = 5432
-POSTGRES_DB = "kip"
 
-POSTGRES_DB_URL = f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+POSTGRES_DB_URL = (
+    "postgres://"
+    f"{settings.postgres_user}:{settings.postgres_port}"
+    f"@{settings.postgres_host}:{settings.postgres_port}"
+    f"/{settings.postgres_db}"
+)
 
 
 register_tortoise(
@@ -31,5 +32,5 @@ register_tortoise(
 
 @app.post("/users/", response_model=UserSchema)
 async def create_user(user_data: UserInSchema) -> Any:
-    user = await User.create(**user_data.dict(), hashed_password=user_data.password)
+    user = await User.create(**user_data.model_dump(), hashed_password=user_data.password)
     return user
