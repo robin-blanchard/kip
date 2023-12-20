@@ -1,5 +1,5 @@
 fastapi
 uvicorn[standard]
 tortoise-orm[asyncpg]
-passlib
+passlib[bcrypt]
 pydantic-settings
